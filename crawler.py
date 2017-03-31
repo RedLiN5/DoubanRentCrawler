@@ -25,6 +25,14 @@ def start(urls=None, max_page=50, keywords=None):
 
 def _crawler(urlfront, max_page, keywords):
     columns = ['url', 'title', 'response']
+    df = pd.DataFrame(columns=columns)
+    index = 0
+    url_temp = urlfront + str(0)
+    page = requests.get(url_temp)
+    soup = bs4.BeautifulSoup(page.content, 'lxml')
+    text = soup.findAll('div', 'title')[0].text
+    group_name = text.strip('\n')
+
     for page in range(max_page):
         page_index = page*25
         url = urlfront + str(page_index)
@@ -34,10 +42,11 @@ def _crawler(urlfront, max_page, keywords):
         for item in items:
             target = item.find('a')
             href = target.attrs['href']
-            reponse = item.find_parent().findAll('td')[2].text
+            response = item.find_parent().findAll('td')[2].text
             title = target.attrs['title']
             if any(s in title for s in keywords):
-
-
+                df.ix[index,:] = href, title, response
+                index += 1
+    return df, group_name
 
 
