@@ -22,14 +22,16 @@ def start(urls=None, max_page=50, keywords=None):
         for url in urls:
             df, name = _crawler(url, max_page=max_page,
                                 keywords=keywords)
-            df.to_csv(name+'.csv', index=False)
+            df.to_csv(name+'.csv', index=False,
+                      encoding='utf_8')
     elif isinstance(urls, str):
         df, name = _crawler(urls, max_page=max_page,
                             keywords=keywords)
-        df.to_csv(name+'.csv', index=False)
+        df.to_csv(name+'.csv', index=False,
+                  encoding='utf_8')
 
 def _crawler(urlfront, max_page, keywords):
-    columns = ['url', 'title', 'response']
+    columns = ['url', 'title', 'response_num']
     urls = []
     titles = []
     responses = []
