@@ -1,17 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import requests
-from lxml import etree
-import re
-import datetime
 import pandas as pd
 import numpy as np
-import glob
-import os
-import sys
 import bs4
+from time import gmtime, strftime
 
 def start(urls=None, max_page=50, keywords=None):
+    current_time = strftime("%Y-%m-%d_%H:%M:%S", gmtime())
     if urls is None:
         raise ValueError('"urls" cannot be empty')
 
@@ -22,13 +18,16 @@ def start(urls=None, max_page=50, keywords=None):
         for url in urls:
             df, name = _crawler(url, max_page=max_page,
                                 keywords=keywords)
-            df.to_csv(name+'.csv', index=False,
+            df.to_csv(name+current_time+'.csv',
+                      index=False,
                       encoding='utf_8')
     elif isinstance(urls, str):
         df, name = _crawler(urls, max_page=max_page,
                             keywords=keywords)
-        df.to_csv(name+'.csv', index=False,
+        df.to_csv(name+current_time+'.csv',
+                  index=False,
                   encoding='utf_8')
+    print('Congratulations! Crawler is finished successfully!')
 
 def _crawler(urlfront, max_page, keywords):
     columns = ['url', 'title', 'response_num']
@@ -66,5 +65,5 @@ def _crawler(urlfront, max_page, keywords):
 
 if __name__ == '__main__':
     start(urls='https://www.douban.com/group/shanghaizufang/discussion?start=',
-          max_page=10,
+          max_page=50,
           keywords=['同济', '四平路', '五角场', '国权路'])
