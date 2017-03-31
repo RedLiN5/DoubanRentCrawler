@@ -19,13 +19,20 @@ def start(urls=None, max_page=50, keywords=None):
         raise ValueError('"keywords" cannot be empty')
 
     if isinstance(urls, type):
-        pass
+        for url in urls:
+            df, name = _crawler(url, max_page=max_page,
+                                keywords=keywords)
+            df.to_csv(name+'.csv', index=False)
     elif isinstance(urls, str):
-        pass
+        df, name = _crawler(urls, max_page=max_page,
+                            keywords=keywords)
+        df.to_csv(name+'.csv', index=False)
 
 def _crawler(urlfront, max_page, keywords):
     columns = ['url', 'title', 'response']
-    df = pd.DataFrame(columns=columns)
+    urls = []
+    titles = []
+    responses = []
     index = 0
     url_temp = urlfront + str(0)
     page = requests.get(url_temp)
@@ -45,8 +52,17 @@ def _crawler(urlfront, max_page, keywords):
             response = item.find_parent().findAll('td')[2].text
             title = target.attrs['title']
             if any(s in title for s in keywords):
-                df.ix[index,:] = href, title, response
+                urls.append(href)
+                titles.append(title)
+                responses.append(response)
                 index += 1
+    df = pd.DataFrame(data=np.array([urls, titles, responses]).T,
+                                    columns=columns)
     return df, group_name
 
 
+
+if __name__ == '__main__':
+    start(urls='https://www.douban.com/group/shanghaizufang/discussion?start=',
+          max_page=10,
+          keywords=['同济', '四平路', '五角场', '国权路'])
