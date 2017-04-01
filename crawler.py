@@ -4,11 +4,11 @@ import requests
 import pandas as pd
 import numpy as np
 import bs4
-from time import gmtime, strftime
+from time import localtime, strftime
 import time
 
 def start(urls=None, max_page=50, keywords=None):
-    current_time = strftime("%Y-%m-%d_%H:%M:%S", gmtime())
+    current_time = strftime("%Y-%m-%d_%H:%M:%S", localtime())
     if urls is None:
         raise ValueError('"urls" cannot be empty')
 
