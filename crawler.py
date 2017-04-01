@@ -46,7 +46,8 @@ def _crawler(urlfront, max_page, keywords):
         url = urlfront + str(page_index)
         headers = {'user-agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:51.0) "+
                                  "Gecko/20100101 Firefox/51.0"}
-        page = requests.get(url, headers=headers)
+        page = requests.get(url, headers=headers,
+                            timeout=(3.3, 5))
         soup = bs4.BeautifulSoup(page.content, 'lxml')
         items = soup.findAll('td', 'title')
         for item in items:
