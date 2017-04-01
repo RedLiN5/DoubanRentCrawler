@@ -14,7 +14,7 @@ def start(urls=None, max_page=50, keywords=None):
     if keywords is None:
         raise ValueError('"keywords" cannot be empty')
 
-    if isinstance(urls, type):
+    if isinstance(urls, list):
         for url in urls:
             df, name = _crawler(url, max_page=max_page,
                                 keywords=keywords)
@@ -44,7 +44,9 @@ def _crawler(urlfront, max_page, keywords):
     for page in range(max_page):
         page_index = page*25
         url = urlfront + str(page_index)
-        page = requests.get(url)
+        headers = {'user-agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:51.0) "+
+                                 "Gecko/20100101 Firefox/51.0"}
+        page = requests.get(url, headers=headers)
         soup = bs4.BeautifulSoup(page.content, 'lxml')
         items = soup.findAll('td', 'title')
         for item in items:
@@ -64,6 +66,9 @@ def _crawler(urlfront, max_page, keywords):
 
 
 if __name__ == '__main__':
-    start(urls='https://www.douban.com/group/shanghaizufang/discussion?start=',
-          max_page=50,
+    urls = ['https://www.douban.com/group/shanghaizufang/discussion?start=',
+            'https://www.douban.com/group/shzf/discussion?start=',
+            'https://www.douban.com/group/homeatshanghai/discussion?start=']
+    start(urls=urls,
+          max_page=100,
           keywords=['同济', '四平路', '五角场', '国权路'])
