@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import bs4
 from time import gmtime, strftime
+import time
 
 def start(urls=None, max_page=50, keywords=None):
     current_time = strftime("%Y-%m-%d_%H:%M:%S", gmtime())
@@ -35,7 +36,7 @@ def _crawler(urlfront, max_page, keywords):
     titles = []
     responses = []
     index = 0
-    url_temp = urlfront + str(0)
+    url_temp = urlfront + 'discussion?start=' + str(0)
     page = requests.get(url_temp)
     soup = bs4.BeautifulSoup(page.content, 'lxml')
     text = soup.findAll('div', 'title')[0].text
@@ -43,7 +44,7 @@ def _crawler(urlfront, max_page, keywords):
 
     for page in range(max_page):
         page_index = page*25
-        url = urlfront + str(page_index)
+        url = urlfront + 'discussion?start=' + str(page_index)
         headers = {'user-agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:51.0) "+
                                  "Gecko/20100101 Firefox/51.0"}
         page = requests.get(url, headers=headers,
@@ -67,9 +68,9 @@ def _crawler(urlfront, max_page, keywords):
 
 
 if __name__ == '__main__':
-    urls = ['https://www.douban.com/group/shanghaizufang/discussion?start=',
-            'https://www.douban.com/group/shzf/discussion?start=',
-            'https://www.douban.com/group/homeatshanghai/discussion?start=']
+    urls = ['https://www.douban.com/group/homeatshanghai/']
+    start_time = time.time()
     start(urls=urls,
-          max_page=100,
+          max_page=200,
           keywords=['同济', '四平路', '五角场', '国权路'])
+    print('Running Time: {0:.2f}s'.format(time.time()-start_time))
