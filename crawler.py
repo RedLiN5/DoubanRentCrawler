@@ -5,7 +5,6 @@ import pandas as pd
 import numpy as np
 import bs4
 from time import localtime, strftime
-import time
 import random
 import string
 
@@ -73,11 +72,3 @@ def _crawler(urlfront, max_page, keywords):
     return df, group_name
 
 
-
-if __name__ == '__main__':
-    urls = ['https://www.douban.com/group/homeatshanghai/']
-    start_time = time.time()
-    start(urls=urls,
-          max_page=200,
-          keywords=['同济', '四平路', '五角场', '国权路'])
-    print('Running Time: {0:.2f}s'.format(time.time()-start_time))
