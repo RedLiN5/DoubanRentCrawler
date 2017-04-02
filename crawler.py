@@ -8,8 +8,12 @@ from time import localtime, strftime
 import random
 import string
 
-def start(urls=None, max_page=50, keywords=None):
+def start(username=None, password=None,
+          urls=None, max_page=50, keywords=None):
     current_time = strftime("%Y-%m-%d_%H:%M:%S", localtime())
+    if username or password is None:
+        raise ValueError('"username" or "password" may not be valid')
+
     if urls is None:
         raise ValueError('"urls" cannot be empty')
 
@@ -18,27 +22,30 @@ def start(urls=None, max_page=50, keywords=None):
 
     if isinstance(urls, list):
         for url in urls:
-            df, name = _crawler(url, max_page=max_page,
+            df, name = _crawler(username=username, password=password,
+                                urlfront=url, max_page=max_page,
                                 keywords=keywords)
             df.to_csv(name+current_time+'.csv',
                       index=False,
                       encoding='utf_8')
     elif isinstance(urls, str):
-        df, name = _crawler(urls, max_page=max_page,
+        df, name = _crawler(username=username, password=password,
+                            urlfront=urls, max_page=max_page,
                             keywords=keywords)
         df.to_csv(name+current_time+'.csv',
                   index=False,
                   encoding='utf_8')
     print('Congratulations! Crawler is finished successfully!')
 
-def _crawler(urlfront, max_page, keywords):
+def _crawler(username, password, 
+             urlfront, max_page, keywords):
     columns = ['url', 'title', 'response_num']
     urls = []
     titles = []
     responses = []
     index = 0
     r = requests.Session()
-    payload = {'form_email': '4372125@qq.com', 'form_password': 'andrew4372125'}
+    payload = {'form_email': username, 'form_password': password}
     p = r.post('https://www.douban.com/', data=payload)
     cookie_dict = p.cookies.get_dict()
     cookie_item = [name + '=' + cookie_dict[name] for name in cookie_dict if name != 'bid']
