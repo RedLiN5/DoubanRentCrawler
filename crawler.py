@@ -47,9 +47,11 @@ def _crawler(username, password,
     r = requests.Session()
     payload = {'form_email': username, 'form_password': password}
     p = r.post('https://www.douban.com/', data=payload)
-    cookie_dict = p.cookies.get_dict()
-    cookie_item = [name + '=' + cookie_dict[name] for name in cookie_dict if name != 'bid']
-    cookie = {'Cookie': '; '.join(cookie_item)}
+    cookie = {'Cookie': ''}
+    if p.status_code == 200:
+        cookie_dict = p.cookies.get_dict()
+        cookie_item = [name + '=' + cookie_dict[name] for name in cookie_dict if name != 'bid']
+        cookie = {'Cookie': '; '.join(cookie_item)}
     url_temp = urlfront + 'discussion?start=' + str(0)
     page = requests.get(url_temp)
     soup = bs4.BeautifulSoup(page.text, 'html.parser')
