@@ -37,7 +37,7 @@ def start(username=None, password=None,
                   encoding='utf_8')
     print('Congratulations! Crawler is finished successfully!')
 
-def _crawler(username, password, 
+def _crawler(username, password,
              urlfront, max_page, keywords):
     columns = ['url', 'title', 'response_num']
     urls = []
@@ -52,7 +52,7 @@ def _crawler(username, password,
     cookie = {'Cookie': '; '.join(cookie_item)}
     url_temp = urlfront + 'discussion?start=' + str(0)
     page = requests.get(url_temp)
-    soup = bs4.BeautifulSoup(page.content, 'lxml')
+    soup = bs4.BeautifulSoup(page.text, 'html.parser')
     text = soup.findAll('div', 'title')[0].text
     group_name = text.strip('\n')
 
@@ -67,7 +67,7 @@ def _crawler(username, password,
         page = requests.get(url, headers=headers,
                             cookies=cookie,
                             timeout=(6.1, 5))
-        soup = bs4.BeautifulSoup(page.content, 'lxml')
+        soup = bs4.BeautifulSoup(page.text, 'html5lib')
         items = soup.findAll('td', 'title')
         for item in items:
             target = item.find('a')
