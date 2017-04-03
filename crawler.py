@@ -11,7 +11,7 @@ import string
 def start(username=None, password=None,
           urls=None, max_page=50, keywords=None):
     current_time = strftime("%Y-%m-%d_%H:%M:%S", localtime())
-    if username or password is None:
+    if username is None or password is None:
         raise ValueError('"username" or "password" may not be valid')
 
     if urls is None:
